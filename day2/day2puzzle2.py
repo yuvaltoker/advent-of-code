@@ -1,4 +1,5 @@
 from typing import Dict, List
+from collections import defaultdict
 import functools as fc
 
 def parseDraw(draw: str) -> Dict:
@@ -36,8 +37,16 @@ def parseLine(line: str) -> Dict:
     game['draws'] = parseRound(data[1])
     return game
 
+def handleDraw(draw: Dict, max_color) -> None:
+    max_color[draw['color']] = max(draw['quantity'], max_color[draw['color']])
+
 def handleGame(game: Dict) -> int:
-    print(game)
+    max_color = defaultdict(int)
+    for draw in game['draws']:
+        handleDraw(draw, max_color)
+    return max_color['red'] * max_color['green'] * max_color['blue']
+
+
 
 # our main goal has two parts:
 # 1. making a list of the dictionary:
